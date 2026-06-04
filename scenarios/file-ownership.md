@@ -12,21 +12,21 @@
 
 ## Матрица ownership (пример — адаптировать под проект)
 
-| Файл / пакет | Владелец |
+| Файл / пакет | Владелец (роль) |
 |---|---|
-| `server/cmd/api/main.go` | BE-01 |
-| `server/internal/router/*` | BE-01 |
-| `server/internal/config/*` | BE-01 |
-| `server/internal/middleware/auth.go` | SEC-01 |
-| `server/internal/<feature>/` | соответствующий BE-NN |
-| `console/src/router.tsx` | FE-01 |
-| `console/src/components/Layout.tsx` | FE-01 |
-| `console/src/api/client.ts`, `store/auth.ts` | FE-01 |
-| `console/src/pages/<feature>/` | соответствующий FE-NN |
-| `agent/core/*` | AL-01 |
-| `agent/pal/*` | AL-01 (AL-02+ добавляют только новые подпакеты) |
-| `infra/postgres/migrations/` | DO-01 (остальные добавляют только новые 00N_*.sql) |
-| `infra/docker-compose.yml`, `nginx/`, `Makefile`, CI | DO-01 |
+| Точка входа сервера (`main`) | Backend Lead |
+| Регистрация маршрутов / роутер | Backend Lead |
+| Конфиг сервера | Backend Lead |
+| Auth-middleware | Security Engineer |
+| Пакет конкретной фичи бэкенда | соответствующий Backend Engineer |
+| Роутер фронтенда | Frontend Lead |
+| Layout / навигация (sidebar) | Frontend Lead |
+| API-клиент, auth-store фронтенда | Frontend Lead |
+| Страницы конкретной фичи | соответствующий Frontend Engineer |
+| Ядро агента (core) | Agent Lead |
+| Платформенный слой агента | Agent Lead (остальные добавляют только новые подпакеты) |
+| Миграции БД | DevOps/SRE (остальные добавляют только новые `00N_*.sql`) |
+| docker-compose, nginx, Makefile, CI | DevOps/SRE |
 
 ## Онбординг нового агента — 3 шага
 

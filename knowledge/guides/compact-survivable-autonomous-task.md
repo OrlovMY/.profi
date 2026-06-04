@@ -27,4 +27,4 @@
 `playbooks/memory_management.md` (таксономия памяти, «активный план»), `scenarios/session-start.md` (ритуал старта = и после compact).
 
 ## Источник
-MDMy DC-2 (2026-06-02): автономный аудит карточек спроектирован под /compact — живой трекер `docs/.../dc2-audit-tracker.md` + якорь `memory/project_dc2_card_audit.md` + 🔴-указатель в MEMORY.md + CURRENT STEP + фраза-триггер.
+Автономный многошаговый аудит, спроектированный под /compact: живой трекер в доке репо + якорь в памяти проекта + 🔴-указатель в `MEMORY.md` + однозначный CURRENT STEP + заранее согласованная фраза-триггер.

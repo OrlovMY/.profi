@@ -1,7 +1,7 @@
 # Recipe: PyInstaller onefile — упаковка Python-инструмента + внешние бинари/DLL/данные
 
 ## Условия применения
-Нужен один `.exe` (Windows) из Python-CLI/GUI, который тащит с собой сторонние утилиты (adb, edl, прошивки, APK, .img, нативные .dll-бэкенды). Оператору даём один файл.
+Нужен один `.exe` (Windows) из Python-CLI/GUI, который тащит с собой сторонние утилиты (внешние CLI-бинарники, прошивки, образы, архивы, нативные .dll-бэкенды). Оператору даём один файл.
 
 ## Суть (рабочая последовательность)
 1. **`.spec`-файл, запуск из КОРНЯ проекта** (пути в spec — относительно cwd):
@@ -15,14 +15,14 @@
    if hasattr(sys, '_MEIPASS'): os.add_dll_directory(sys._MEIPASS)
    ```
    В spec: `EXE(..., runtime_hooks=['tools/rthook_libusb.py'])`.
-4. **Данные** (img/apk/скрипты/лоадеры) → `datas=[(src, dest_subdir)]`. Резолв в коде:
+4. **Данные** (образы/архивы/скрипты/лоадеры) → `datas=[(src, dest_subdir)]`. Резолв в коде:
    ```python
    FROZEN = getattr(sys, 'frozen', False)
    def res(*p): return os.path.join(sys._MEIPASS if FROZEN else REPO, *p)
    ```
 5. **Вшитый CLI-инструмент без отдельного python** (onefile = один интерпретатор): пере-вход в СЕБЯ.
-   `[sys.executable, '__edl__'] if FROZEN else [sys.executable, 'edl.py']`; в `main()`:
-   `if sys.argv[1]=='__edl__': sys.argv=['edl.py']+sys.argv[2:]; runpy.run_path(EDL_PY, run_name='__main__')`.
+   `[sys.executable, '__tool__'] if FROZEN else [sys.executable, 'tool.py']`; в `main()`:
+   `if sys.argv[1]=='__tool__': sys.argv=['tool.py']+sys.argv[2:]; runpy.run_path(TOOL_PY, run_name='__main__')`.
 6. **GUI-режим**: `console=False` (windowed) — но тогда stdout может быть None: оборачивай `print` в try/except, лог через GUI-callback.
 7. **UTF-8 окружение** для дочерних процессов с прогресс-барами: выставь `PYTHONIOENCODING=utf-8`/`PYTHONUTF8=1` и читай вывод `subprocess.run(..., encoding='utf-8', errors='replace')` — иначе символы рамок/`█` крашат запись под cp1252 (RU-Windows).
 8. **Проверка бандла без запуска GUI** (что всё вшито):
@@ -40,4 +40,4 @@
 - ❌ Считать «собралось = работает на железе»: real I/O (USB-flash и т.п.) через frozen-exe тестируй отдельно — пути/бэкенды во frozen ведут иначе.
 
 ## Источник
-Инцидент/успех MDMy UFI-Provisioner (2026-06-02): onefile-exe с edl(bkerler)+adb+libusb+boot.img+APK+loaders, 41 МБ; пере-вход `__edl__`, rthook для libusb, `--distpath` грабля, UTF-8 для прогресс-бара Firehose.
+Подтверждено на практике: onefile-exe с вшитым CLI-инструментом (пере-вход через `__tool__`), внешними бинарниками (adb), нативным libusb-бэкендом (rthook), образами и архивами в datas (~41 МБ). Подводные камни: грабля `--distpath`, UTF-8 для прогресс-бара дочернего процесса.

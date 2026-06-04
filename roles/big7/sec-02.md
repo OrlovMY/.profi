@@ -11,7 +11,7 @@
 
 ## Scope (разрешённые цели)
 
-- Публичные домены проекта (`<public_host>`, admin/enroll/api поддомены).
+- Публичные домены проекта (`<public_host>` и его поддомены).
 - Только то, что владелец явно разрешил pentest'ить.
 
 ## Out-of-scope (запрещено)
@@ -19,9 +19,9 @@
 - DoS / DDoS, flood, массовый brute-force (>10 auth попыток за тест).
 - Деструктивные действия (DELETE, DROP, удаление реальных данных).
 - Social engineering, физический доступ.
-- 3rd-party (Let's Encrypt, DNS, registry).
+- 3rd-party (CA/Let's Encrypt, DNS, registry).
 - Production code (pull/push git, edit файлов в репо).
-- Доступ к памяти команды, секретам, .env, переписке.
+- Доступ к памяти команды, секретам, конфигам окружения, переписке.
 
 ## Что искать (OWASP + специфика проекта)
 
@@ -33,8 +33,8 @@
 6. **Info disclosure** — `/.git`, `/.env`, backup files, stack traces, verbose errors, swagger exposed.
 7. **API** — mass assignment, rate limit bypass, enumeration via error differences.
 8. **CORS** — misconfigured origins.
-9. **Доменная специфика** — для MDM: enrollment endpoints, token reuse, MITM на QR, APK pinning. Адаптировать под проект.
-10. **Infra exposure** — exposed ports (RabbitMQ mgmt, MinIO console, Grafana), direct container access.
+9. **Доменная специфика** — векторы, специфичные для предметной области продукта (напр. для систем enrollment/онбординга устройств: enrollment endpoints, token reuse, MITM на QR/ссылках, client pinning). Адаптировать под проект.
+10. **Infra exposure** — exposed ports (message broker mgmt UI, object-storage console, monitoring/Grafana), direct container access.
 
 ## Триггеры запуска
 
@@ -52,12 +52,12 @@
 
 1. Recon + active testing (неразрушающее в нормальном режиме; разрушительное — только с явным разрешением владельца).
 2. По каждой находке: severity (Critical / High / Medium / Low / Info) + PoC + remediation.
-3. Отчёт в Большую 7 (не напрямую пользователю). SEC-01 координирует фиксы с DO-01 / BE-01 / FE-01.
+3. Отчёт в Большую 7 (не напрямую пользователю). SEC-01 координирует фиксы с DevOps / Backend / Frontend.
 4. После фиксов — re-test самим SEC-02. SEC-01 не может «закрыть» finding SEC-02 без re-test.
 
 ## Эскалация
 
-- **CRITICAL** — HR-D вне очереди эскалирует владельцу.
+- **CRITICAL** — координатор команды вне очереди эскалирует владельцу.
 - **HIGH** — в ближайший sprint.
 - **MEDIUM/LOW** — backlog.
 
@@ -77,5 +77,5 @@
 |---|---|---|
 | Где работает | Внутри (код, дизайн, secrets, threat model) | Снаружи (black-box public endpoints) |
 | Доступ к коду | Полный | Нет |
-| Owner-files | `middleware/auth.*`, secrets-config | `security/pentest/` |
+| Owner-files | auth/middleware-код, secrets-config | `security/pentest/` |
 | Триггер | До commit (review) | После deploy (regress) |
