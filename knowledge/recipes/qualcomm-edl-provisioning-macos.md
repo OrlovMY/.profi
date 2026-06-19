@@ -54,6 +54,11 @@ cd USB-Dongle-UFI/tools/provisioner
 - Вход в EDL: выключить модем → вскрыть корпус → зажать EDL-кнопку → вставить USB удерживая. Проверка: `lsusb | grep -i 05c6:9008`.
 - Перед `--commit` полезно read-only сверить профиль: `.venv/bin/python ../edl/edl.py printgpt --loader <fhprg_peek.bin> --memory eMMC` → HWID/sector должны совпасть с `known_devices.json` (провижинер сам делает это в device_profile_guard и СТОП при расхождении).
 
+## Пост-проверка (после успешного провижина)
+- Агент в логах: `CpeApiClient checkin admin_snapshot` + LTE up (`NetworkController connected={data}`) = энролл состоялся.
+- В MDMy-админке у устройства `admin_build` должен равняться build развёрнутой админки (напр. 26), **НЕ 0**. Если 0 — провижинер <1.10 не писал `/data/local/tmp/BUILD` (его читает `api_server otaReadBuild()`); при провижине OTA не было → маркер отсутствовал. Фикс: provisioner ≥1.10 пишет `BUILD` в `deploy_stack`; на уже-провиженном устройстве — `adb shell "echo <build> > /data/local/tmp/BUILD"`.
+- adb после провижина периодически рвётся (USB-композит `rndis,adb` пере-композируется) — `adb kill-server && adb start-server`.
+
 ## Hard rules (как и на Windows)
 - Прошивать ТОЛЬКО `boot`; ⛔ НИКОГДА modem/persist/fsg/efs (IMEI).
 - Чистка /data — ТОЛЬКО BCB→recovery (`--wipe`), не raw-erase.
