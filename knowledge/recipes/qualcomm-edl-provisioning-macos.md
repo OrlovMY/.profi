@@ -59,6 +59,12 @@ cd USB-Dongle-UFI/tools/provisioner
 - В MDMy-админке у устройства `admin_build` должен равняться build развёрнутой админки (напр. 26), **НЕ 0**. Если 0 — провижинер <1.10 не писал `/data/local/tmp/BUILD` (его читает `api_server otaReadBuild()`); при провижине OTA не было → маркер отсутствовал. Фикс: provisioner ≥1.10 пишет `BUILD` в `deploy_stack`; на уже-провиженном устройстве — `adb shell "echo <build> > /data/local/tmp/BUILD"`.
 - adb после провижина периодически рвётся (USB-композит `rndis,adb` пере-композируется) — `adb kill-server && adb start-server`.
 
+## Грабли провижина (уроки live-сессии 2026-06-20/21)
+- **vendor-cleanup ДОЛЖЕН ждать api_server + верифицировать.** Шаг чистки вендор-апов идёт через root-канал api_server; после ребута регистрации priv-app api_server может быть ещё не поднят → `pm disable` молча не выполняется, вендор-апы остаются, а лог ложно говорит «отключено N». Фикс (provisioner ≥1.11): `_wait_api()` + проверка `pm list packages -d` + честный отчёт. Общий принцип: **любой шаг через api_server сначала дожидается его готовности и верифицирует результат, не репортит успех вслепую.**
+- **AP-SSID меняется только серверным `setWifiConfig` (hostapd), НЕ агентской `wifi_config`** — последняя на CPE идёт через `WifiManager` (station-режим) и конфликтует с hostapd-AP (два hostapd за wlan0). Не путать каналы.
+- **Термо-потолок UFI — аппаратный.** Под сустейн-нагрузкой thermal-engine душит CPU 800→200 МГц → разом отваливаются админка/ICMP/WAN, само-recovery при остывании. Софт-throttle download'а на этом ядре НЕвозможен (нет ifb/ingress-police; br0=noqueue, wlan0=mq, renice не берётся). Лечится только охлаждением. Не диагностировать перегрев как «падение стека/сети» (LED: красный строб).
+- **adb после провижина периодически рвётся** (USB-композит rndis,adb) — `adb kill-server && adb start-server`. Не путать с «устройство умерло».
+
 ## Hard rules (как и на Windows)
 - Прошивать ТОЛЬКО `boot`; ⛔ НИКОГДА modem/persist/fsg/efs (IMEI).
 - Чистка /data — ТОЛЬКО BCB→recovery (`--wipe`), не raw-erase.
