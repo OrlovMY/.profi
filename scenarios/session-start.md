@@ -18,6 +18,8 @@
 
 **Самопроверка перед первым tool-call после компакта:** «Я уже перечитал `.profi/README.md` + standards + scenarios + playbooks В ЭТОЙ сессии после компакта? Если нет — стоп, читаю.»
 
+**🔴🔴 САМОЕ ЖЁСТКОЕ (owner 2026-07-06, рецидив): `system-reminder` НЕ засчитывается за gate.** Харнесс инжектит в начало continuation-контекста `<system-reminder>` с содержимым `CLAUDE.md` + индексом `MEMORY.md` + краткими summary. **Это НЕ выполнение gate.** Индекс `MEMORY.md` в reminder = только одностро́чные указатели (НЕ содержимое файлов памяти); summary = сжатый пересказ (НЕ правила `.profi`, НЕ файлы памяти). Полагаться на них = нарушение. **Gate выполнен ТОЛЬКО когда ты СВОИМИ tool-call'ами (Read) фактически перечитал: (1) все `.profi` README+standards+scenarios+playbooks, (2) `MEMORY.md`, (3) КАЖДЫЙ файл `memory/*.md` из индекса.** Наличие summary/индекса в контексте ≠ «я загрузил память». Рецидив 2026-07-06: после авто-resume бросился в checksum/commits/device-reboot/prod-DB, опираясь на summary+reminder-индекс, БЕЗ Read `.profi` и файлов памяти — owner поймал. См. [[feedback_compact_reload_profi]].
+
 ---
 
 ## Шаг 0 — Проверка модели
