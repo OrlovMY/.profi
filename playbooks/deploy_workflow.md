@@ -41,7 +41,7 @@ ssh root@<remote_host> "cd <repo_path> && \
   git log --oneline -3"
 ```
 
-**Почему `git checkout --detach` обязателен** — полное объяснение в `scenarios/git-workflow.md`. Без detach fetch падает silently → deploy идёт со старого кода. Всегда проверять `git log --oneline -3` после fetch.
+**Почему `git checkout --detach` обязателен** — полное объяснение в `scenarios/git-workflow.md`. Без detach git отказывает — с сообщением, не молча. Опасен не отказ, а то, что сборка стартует независимо от него и идёт со старого кода. Поэтому `git log --oneline -3` после fetch — **шлюз перед сборкой**, а не формальность.
 
 ## 3. Migration перед build (всегда)
 
