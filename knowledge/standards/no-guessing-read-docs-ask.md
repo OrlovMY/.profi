@@ -16,4 +16,6 @@
 - «Есть ли паспорт/контракт на это?» → `grep docs/passports` ПЕРЕД гипотезами.
 - Ловить реальные данные (как с body Beeline) вместо догадок о формате.
 - Не уверен и нет доки → 1 вопрос владельцу, затем код.
-- Связано: [[documentation-first-golden-rule]], [[challenge-suboptimal-owner-decisions]], [[confirm-understanding-before-acting]], [[reuse-before-new-section]].
+- Связано: [[documentation-first-golden-rule]], [[ask-or-act]] (ступени 2–3, 5), [[reuse-before-new-section]].
+
+История правок: `PE-01-разбор-2026-08-24.md`, блок 2 (Б15-вход, в редакции PQ-01 — «Блок 2: разбор Б1–Б16»); 2026-08-24.

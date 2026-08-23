@@ -16,4 +16,6 @@
 - Сомнение «отдельно или внутрь» → Big-7.
 - Это UI-аналог [[backlog-dedup-before-create]] (там — не плодить дубль-задачи; здесь — не плодить дубль-разделы).
 
-Связано: [[backlog-dedup-before-create]], [[documentation-first-golden-rule]], [[challenge-suboptimal-owner-decisions]].
+Связано: [[backlog-dedup-before-create]], [[documentation-first-golden-rule]], [[ask-or-act]] (ступень 5).
+
+История правок: `PE-01-разбор-2026-08-24.md`, блок 2 (Б15-вход, в редакции PQ-01 — «Блок 2: разбор Б1–Б16»); 2026-08-24.

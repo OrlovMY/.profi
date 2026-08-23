@@ -17,7 +17,7 @@ HR-D:
 
 ## 2. HR-D разбивает на subtasks
 
-- По ролям из матрицы ownership.
+- По ролям — `roles/big7/INDEX.md` (кто за какой домен) и `scenarios/file-ownership.md` (чей файл).
 - Решает: параллельно или последовательно?
   - Все coding-задачи параллельно → `isolation:"worktree"` для каждой.
   - Если требуется prod-write → разделить на Phase A (worktree, код) и Phase B (один deploy-агент без isolation).
@@ -89,3 +89,5 @@ QA-01 утверждает; если что-то падает — rollback и о
 - Merge в master до «работает» от пользователя.
 - Отчёт «готово» без commit hash и git status.
 - Нарушения worktree/deploy — см. `scenarios/parallel-agents.md` и `scenarios/git-workflow.md`.
+
+История правок: `PE-01-разбор-2026-08-24.md`, блок 2 (Б13 — С1, в редакции PQ-01 — «Блок 2: разбор Б1–Б16»); 2026-08-24.
