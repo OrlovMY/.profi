@@ -101,4 +101,6 @@ curl/grep на проде: фича отвечает, ключевой код п
 4. деплой: fetch + detach + reset --hard + grep-верификация ПЕРЕД build;
 5. после: curl/grep на проде.
 
-Связано: deploy-bundle pitfall (detach HEAD), verify-own-deploys.
+Связано: `scenarios/git-workflow.md`, «Деплой через git bundle» (detach HEAD); `knowledge/guides/verify-deploy-actually-shipped.md` (проверка, что выложено то самое).
+
+История правок: `PE-01-разбор-2026-08-24.md`, раздел «Совместная редакция и применение», мелкая 3 (переквалифицирована); вердикты — `PQ-01-разбор-2026-08-24.md`; 2026-08-24.

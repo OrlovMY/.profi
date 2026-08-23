@@ -9,26 +9,21 @@ Skeleton для нового проекта. Скопировать в `memory/M
 - [Текущий статус (<YYYY-MM-DD>)](project_session_<YYYY-MM-DD>_status.md) — что в master/проде, открытый backlog, blockers, совет следующей сессии
 - [Data pipelines status](project_data_pipelines_status.md) — что работает / что в backlog
 
+## ОБЯЗАТЕЛЬНО ДО ПЕРВОГО ДЕЙСТВИЯ (дата раздела: <YYYY-MM-DD>)
+
+Набор — **перечень, а не признак**: правило попадает сюда не по значку в строке, а по цене нарушения — те, чьё нарушение необратимо (потеря устройства, потеря данных, простой боевой системы), и все действующие разрешения со сроком. Артефакт гейта старта — `ГЕЙТ память: N из M`, где M — число строк этого раздела, а не оценка на глаз (`scenarios/session-start.md`, Шаг 1).
+
+- [<правило с необратимой ценой>](feedback_<...>.md) — <какой ущерб предотвращает>
+- [<действующее разрешение со сроком до <дата>>](feedback_<...>.md) — <что разрешено, до когда>
+
+**Порядок ведения:** правило, чьё нарушение стоило инцидента, вносится сюда тем же ходом, что и запись о самом инциденте. **Признак соблюдения:** у раздела стоит дата последнего изменения; появился в памяти новый файл с записью об инциденте, а дата раздела старше этой записи — порядок нарушен, набор пересматривается.
+
 ## Doctrine — правила работы
 
-- [Workflow scheme](project_workflow_scheme.md) — канонический playbook (HR-D + agents + Big 7 + Phase A/B)
-- [Agent briefing template](agent_briefing_template.md) — обязательный блок в каждый coding-промпт
-- [Session start — load memory first](feedback_session_start.md) — в начале сессии читать MEMORY.md
-- [Response format — role prefix](feedback_response_format.md) — `РОЛЬ [YYYY-MM-DD HH:MM]: ...`
-- [Communication chain](feedback_communication_chain.md) — пользователь общается только с HR-D
-- [HR-D never codes](feedback_hrd_no_coding.md) — всегда делегирует
-- [Big 7 is the gate](feedback_big7_with_sec02.md) — Big 7 включает SEC-02
-- [Production escalation](feedback_prod_escalation.md) — STOP → Big 7 → user-approve
-- [No parallel agents on same tree](feedback_no_parallel_same_tree.md) — `isolation:"worktree"` или серриализация
-- [Finish before new task](feedback_finish_before_new.md) — закончить текущее перед новым
-- [Official docs required](feedback_official_docs_required.md) — Context7 / WebFetch до commit
-- [Build policy — no local builds](feedback_build_policy.md) — собираем только на CI/VPS
-- [UI redesign on growth](feedback_ui_redesign_on_growth.md) — новые поля = редизайн, не append
-- [Admin tooltips mandatory](feedback_admin_tooltips.md) — каждый пункт UI с hover-tooltip
-- [Changelog required](feedback_changelog_required.md) — каждая user-visible фича = запись
-- [Autonomy policy](feedback_autonomy_policy.md) — деструктив только с явного одобрения
-- [Investigate autonomously](feedback_autonomous_diagnosis.md) — не спрашивать что проверить
-- [Task clarification](feedback_task_clarification.md) — короткое «верно понял?» перед реализацией
+- [Библиотека `.profi`](<путь к .profi в этом проекте>/README.md) — роли, сценарии, плейбуки, стандарты. **Здесь не дублируются**: правило живёт в `.profi`, в памяти — только проектная частность со ссылкой (`scenarios/session-start.md`, Шаг 1.5).
+- [Agent briefing template](<путь к .profi в этом проекте>/templates/agent_briefing.md) — обязательный блок в каждый coding-промпт; плейсхолдеры подменяются под проект
+- [Admin tooltips mandatory](feedback_admin_tooltips.md) — каждый пункт UI с hover-tooltip (проектное требование)
+- [Changelog required](feedback_changelog_required.md) — каждая user-visible фича = запись (проектное требование)
 
 ## Infrastructure & deploy
 
@@ -57,3 +52,5 @@ Skeleton для нового проекта. Скопировать в `memory/M
 ## Backlog
 
 - [<Backlog item title>](project_backlog_<topic>.md) — что отложено, почему, кто owner
+
+История правок: `PE-01-разбор-2026-08-24.md`, раздел «Совместная редакция и применение», удаление 1 + каркас Г1, строка-ссылка на `agent_briefing.md` (правка PQ-01 при проверке применения); вердикты — `PQ-01-разбор-2026-08-24.md`; 2026-08-24.

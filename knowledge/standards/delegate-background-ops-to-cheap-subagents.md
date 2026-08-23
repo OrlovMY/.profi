@@ -44,7 +44,7 @@
 Иерархия: **Haiku (retrieval | watch) → Sonnet (impl | judgment-loop) → Opus (coord / action-decision) → Big-7 (audit)**. Дешёвые ДЕЛАЮТ механическое (найти/ждать); Opus/Big-7 СУДЯТ и ДЕЙСТВУЮТ.
 
 ## Пропагация
-Универсальный стандарт, источник истины здесь (`.profi`). В памяти каждого проекта — строка-указатель (одна строка в `MEMORY.md` с `[[...]]`), как для `delegate-search-to-persistent-haiku`. Универсальное знание → `.profi`, НЕ дублировать в проектную память (правило knowledge-storage).
+Универсальный стандарт, источник истины здесь (`.profi`). В памяти каждого проекта — строка-указатель (одна строка в `MEMORY.md` с `[[...]]`), как для `delegate-search-to-persistent-haiku`. Универсальное знание → `.profi`, НЕ дублировать в проектную память (`knowledge/README.md`, «Что НЕ сюда»).
 
 ## Источник
 Владелец 2026-07-08: «всё, что запускается в отдельных потоках shell — запускать в не-закрываемых персистентных субагентах; для простых операций Haiku/дешёвая модель, чтобы не расходовать токены координатора». Вердикт Большой 7 (APPROVE, watch-vs-judgment граница, READ-ONLY watch, cap+reuse, дистиллят-не-тики). Связано: [[delegate-search-to-persistent-haiku]], [[agent-question-rendezvous]], [[delegate-implementation-to-sonnet]], `prod_escalation`, `validate-recovery-before-destructive`.

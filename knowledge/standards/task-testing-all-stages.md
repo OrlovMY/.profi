@@ -11,7 +11,7 @@
 | # | Этап | Что проверяем (гейт) | Связанный стандарт |
 |---|------|----------------------|--------------------|
 | 1 | **Probe / понимание** | Воспроизвести проблему/текущее поведение НА ФАКТАХ (schema/handler/route/FE/prod), а не по backlog. Подтвердить, что проблема реальна и не сделана уже. | probe-before-implement |
-| 2 | **План / паспорт** | Паспорт фичи написан ДО кода; **тут же зафиксирован тест-план** (что и как будет доказывать успех на каждом следующем этапе) + naming contract для data-pipeline. | function-passport, naming-contract |
+| 2 | **План / паспорт** | Паспорт фичи написан ДО кода; **тут же зафиксирован тест-план** (что и как будет доказывать успех на каждом следующем этапе) + naming contract для data-pipeline. | documentation-first-golden-rule («Гейт»), data-pipeline-naming-contract |
 | 3 | **Реализация** | Код в стиле окружения; ветка по git-discipline. | git-branch-discipline |
 | 4 | **Сборка + unit** | Код **компилируется** (build/cross-build под целевую ОС); unit-тесты на новую логику (парсинг/гейты/генерация) — зелёные. Без unit там, где логику можно изолированно проверить — недо-готово. | — |
 | 5 | **Интеграция** | Компоненты связаны; интеграционный тест: эндпоинт отвечает / флоу проходит в dev|staging (не только «функция возвращает»). | — |
@@ -45,4 +45,6 @@
 - Регресс смежных флоу не проверен (этап 7).
 - «НЕ ПРОВЕРЕНО» спрятано вместо явного указания.
 
-Связано: `scenarios/task-template.md` (раздел дополнен ссылкой сюда), probe-before-implement, function-passport, no-regression, verify-deploy-actually-shipped, agent-selfupdate-golden-rule, doc-completeness-fix-on-miss.
+Связано: `scenarios/task-template.md` (раздел дополнен ссылкой сюда), probe-before-implement, documentation-first-golden-rule (паспорт до кода), no-regression, verify-deploy-actually-shipped, agent-selfupdate-golden-rule, doc-completeness-fix-on-miss.
+
+История правок: `PE-01-разбор-2026-08-24.md`, раздел «Совместная редакция и применение», мелкая 2 (переквалифицирована); вердикты — `PQ-01-разбор-2026-08-24.md`; 2026-08-24.

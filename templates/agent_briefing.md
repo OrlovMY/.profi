@@ -17,11 +17,11 @@ ENVIRONMENT:
 GIT WORKFLOW:
 - Branch from `master`; commit message in present-tense English with type prefix (feat/fix/chore/docs).
 - New branch name: `feat/<thing>` or `fix/<thing>`. NEVER commit directly to master.
-- If `isolation:"worktree"` — worktree is set up for you; just `git checkout -b <branch>`, work, commit. Don't worry about parent repo.
+- If `isolation:"worktree"` — the worktree is set up for you, but its base is NOT trusted: take it from the main working directory by the absolute path named in your task, then verify it twice — `git fetch "<absolute path to main working dir>" master && git checkout -b <branch> FETCH_HEAD && git rev-parse --short HEAD` (must equal the hash named in your task) and `ls <marker file from task>` (must exist). Hash differs or marker missing → STOP and report. Do NOT branch from `origin/master` inside a worktree. **From a worktree you NEVER deploy:** no `docker compose build/up` on the server, no `cp` into static/staging dirs, no `git push origin`, no cherry-pick «for sync», no `git reset --hard`; SSH to prod — read-only diagnostics only. Deploy = coordinator after merge. (`playbooks/worktree_deploy_safety.md` — written after a worktree agent rebuilt and deployed prod from a stale base.)
 - If NOT isolated — beware of parallel agents. STOP if `git status` shows uncommitted from another task.
 
 PROD-AFFECTING DECISIONS:
-- ANY action on shared production infra (prune, restart cascade, migration retry, force-deploy, image deletion, secret rotation, schema DROP) → STOP, report to HR-D as "ESCALATING TO HR-D" with proposal + reversibility cost.
+- ANY action on shared production infra → STOP, report to HR-D as "ESCALATING TO HR-D" with proposal + reversibility cost. Production-affecting is (full list = `playbooks/prod_escalation.md`, «Что считается production-affecting»): (1) any `docker prune`, volume ops, image deletion; (2) migration retry after error, manual DB fix, `ALTER`/`DROP`; (3) restart cascade (≥2 containers); (4) nginx config swap without `nginx -t`/rollback; (5) pushing a client/agent update to >1 device; (6) any command with `-f`/`--force`/`--volumes` (except the build-cache prune named in DEPLOY WORKFLOW); (7) touching credentials, secrets, certs; (8) disabling/relaxing security middleware «temporarily»; (9) changing data in the prod DB. If unsure whether it counts — it counts.
 - Read-only diagnostics (`df`, `docker ps`, `psql SELECT`, log tail) — OK without escalation.
 - Single-container restart on already-built image — OK.
 - Idempotent migration apply in normal conditions — OK.
@@ -39,12 +39,12 @@ OFFICIAL DOCS:
 
 DEPLOY WORKFLOW (если задача включает прод-деплой):
 - See `playbooks/deploy_workflow.md` in the kit.
-- Pre-flight: `df -h /` must be <70%; if higher → `docker system prune -af --filter "until=72h"` first.
-- Bundle workflow: ALWAYS `git checkout --detach` on remote BEFORE `git fetch ... HEAD:master`, иначе fetch silently fails.
+- Pre-flight: `df -h /` must be <70%; if higher → `docker builder prune -f --filter "until=72h"` (build cache only; `-f` = no interactive prompt, this is the routine exception in `prod_escalation.md`). Still >70% → STOP, escalate (image/volume prune is production-affecting, see PROD-AFFECTING DECISIONS above).
+- Bundle workflow: ALWAYS `git checkout --detach` on remote BEFORE `git fetch ... HEAD:master`. Without it git REFUSES (loudly) — but the build step runs anyway on the old tree. So after fetch ALWAYS check `git log --oneline -3` before build; that check is the gate, not a formality.
 - Migration перед build (всегда). Идемпотентные миграции (`IF NOT EXISTS`).
 - Build order: server → web → reload nginx → smoke.
 - nginx reload only after `nginx -t` passes.
-- On ENOSPC: STOP, prune, retry migration (build cache идемпотентен).
+- On ENOSPC: STOP; build-cache prune only; anything that deletes images or volumes → escalate; then retry migration (build cache is idempotent).
 
 RESOURCE TRACKING:
 - Если запускал что-то на VPS — в финальный отчёт peak CPU/RAM (`docker stats --no-stream`), disk before/after (`df -h`), время операции, bandwidth для трафиковых операций.
@@ -82,3 +82,5 @@ IF BLOCKED:
 - Указан handoff-owner?
 
 Если задача чисто read-only research (Explore) — briefing можно сократить, но если будет писать код или ходить по SSH — обязательно полный.
+
+История правок: `PE-01-разбор-2026-08-24.md`, раздел «Совместная редакция и применение», П1, П2, П4, П8; вердикты — `PQ-01-разбор-2026-08-24.md`; 2026-08-24.

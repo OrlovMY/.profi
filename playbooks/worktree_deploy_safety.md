@@ -97,9 +97,8 @@ ssh <prod-host> "docker exec <web-container> ls <static-dir>/assets | grep index
 → Это **red flag**. Немедленно re-build из текущего prod master ИЛИ rollback на предыдущий bundle.
 
 # Related
-- `.profi/playbooks/deploy_workflow.md` — нормальный deploy через координатора
-- `.profi/playbooks/phase_a_b_split.md` — phase A агент только пишет, phase B координатор мержит и деплоит
-- `.profi/knowledge/recipes/git_merge_strategies.md` — `-X theirs` опасности
+- `playbooks/deploy_workflow.md` — нормальный deploy через координатора
+- `scenarios/parallel-agents.md` — Phase A агент только пишет, Phase B координатор мержит и деплоит
 
 # Rollback recipe (если уже случилось)
 

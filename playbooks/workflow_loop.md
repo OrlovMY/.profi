@@ -48,7 +48,7 @@ HR-D суммирует статус в чате (commit hashes, ветки, ч�
 
 ## 5. Big 7 голосует
 
-На любые prod-affecting и архитектурные решения. Формат — см. `roles/big7/INDEX.md`. Если требуется user-approve — HR-D эскалирует владельцу с (1) что предлагается, (2) почему, (3) reversibility cost.
+На любые prod-affecting и архитектурные решения. Формат — см. `scenarios/big7-consultation.md`. Если требуется user-approve — HR-D эскалирует владельцу с (1) что предлагается, (2) почему, (3) reversibility cost.
 
 ## 6. Phase B deploy
 

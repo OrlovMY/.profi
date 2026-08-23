@@ -12,9 +12,9 @@ Agent({ description, subagent_type, prompt, isolation: "worktree" })
 
 Каждый агент работает в отдельном git worktree (свой checkout, свой index, свой WORKDIR). Конфликтов в working tree нет. После завершения агент возвращает worktree path и branch name; HR-D мержит вручную.
 
-## Критическое ограничение: worktree блокирует сеть
+## Критическое ограничение: изолированная копия не выкладывает
 
-Subagent в worktree-sandbox **не имеет SSH/scp/curl к внешним хостам**. Поэтому coding и deploy нельзя совмещать в одном worktree-агенте.
+Coding и deploy не совмещаются в одном worktree-агенте — **по правилу, а не потому, что песочница это не даст.** Сеть из изолированной копии бывает доступна: агент в worktree уже пересобирал и выкладывал бандл на прод со stale-базы (`playbooks/worktree_deploy_safety.md`, шапка); 24.08.2026 `curl` к внешнему хосту из изолированной копии прошёл. Поэтому промпт Phase A **запрещает SSH/scp/прод-команды словами** (ниже, «Phase A only») и на блокировку не рассчитывает. Что можно и чего нельзя из изолированной копии, когда SSH всё же нужен для read-only диагностики, — `worktree_deploy_safety.md`, «Что НЕЛЬЗЯ» / «Что МОЖНО»; но это исключение координатор выдаёт явно в брифинге, по умолчанию его нет.
 
 ## Phase A / Phase B
 
@@ -73,11 +73,13 @@ Subagent в worktree-sandbox **не имеет SSH/scp/curl к внешним х
 
 ## Anti-patterns
 
-- Worktree-агент пытается `ssh root@<host>` — упадёт на sandbox-блокировке. Всегда упоминать «Phase A only» в промпте.
+- Worktree-агент выполняет `docker compose build`/`up`, `cp` в статику или `git push` — red flag по `worktree_deploy_safety.md`, «Сигналы»; даже если команда прошла, результат откатывается. Всегда упоминать «Phase A only» в промпте.
 - Два writer-агента **БЕЗ** worktree → branch flapping, потеря коммитов.
-- Один deploy-агент **С** worktree → не сможет scp/ssh. Всегда без isolation для Phase B.
+- Один deploy-агент **С** worktree — запрещён правилом (`worktree_deploy_safety.md`), а не песочницей: даже если SSH прошёл, выкладка из копии откатывается. Phase B — всегда без isolation.
 - Параллельный `docker compose build` + миграция → ENOSPC. Сериализовать в Phase B.
 
 ---
 
 > **Официальная документация.** При настройке CI/CD или инструментов изоляции — сверяться с актуальной документацией (Context7 MCP / WebFetch), не с памятью модели.
+
+История правок: `PE-01-разбор-2026-08-24.md`, раздел «Совместная редакция и применение», П3; вердикты — `PQ-01-разбор-2026-08-24.md`; 2026-08-24.
