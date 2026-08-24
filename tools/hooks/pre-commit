@@ -1,0 +1,3 @@
+#!/bin/bash
+# pre-commit свода .profi: линт ссылок и команд (включение: git config core.hooksPath tools/hooks).
+exec bash "$(git rev-parse --show-toplevel)/tools/lint-svod.sh"

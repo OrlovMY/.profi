@@ -29,9 +29,11 @@ PROD-AFFECTING DECISIONS:
 
 TEST DEVICE / TEST ACCOUNT:
 - <Description of test device or test account used for smoke. Include identifier, baseline version, special quirks.>
+- Test-account secrets: reset/creation goes to docs the same turn — `knowledge/standards/test-account-secret-hygiene.md`.
 
 PROJECT SPECIFICS:
 - <Domain-specific rules: SDK quirks, OEM workarounds, framework version constraints, schema invariants, etc.>
+- Machine-read names (shell vars, JSON schema keys, config ids) — Latin only: `knowledge/standards/machine-read-names-in-latin.md`.
 - <Naming conventions for new files/packages.>
 - <Versioning rule: bump versionCode/version on each release; changelog entry mandatory.>
 
@@ -84,6 +86,8 @@ IF BLOCKED:
 
 Если задача чисто read-only research (Explore) — briefing можно сократить, но если будет писать код или ходить по SSH — обязательно полный.
 
-История правок: `PE-01-разбор-2026-08-24.md`, раздел «Совместная редакция и применение», П1, П2, П4, П8; вердикты — `PQ-01-разбор-2026-08-24.md`; 2026-08-24.
+История правок: `archive/2026-08/PE-01-разбор-2026-08-24.md`, раздел «Совместная редакция и применение», П1, П2, П4, П8; вердикты — `archive/2026-08/PQ-01-разбор-2026-08-24.md`; 2026-08-24.
 
-История правок: `PE-01-разбор-2026-08-24.md`, блок 3 (В10 — строка-вход о страже изоляции, в редакции PQ-01 (MAY reject); вердикт — `PQ-01-разбор-2026-08-24.md`, «Блок 3: разбор В1–В10»); 2026-08-24.
+История правок: `archive/2026-08/PE-01-разбор-2026-08-24.md`, блок 3 (В10 — строка-вход о страже изоляции, в редакции PQ-01 (MAY reject); вердикт — `archive/2026-08/PQ-01-разбор-2026-08-24.md`, «Блок 3: разбор В1–В10»); 2026-08-24.
+
+История правок: `archive/2026-08/ревизия-свода-2026-08-24.md`, раздел 13, Б6 (test-account-secret-hygiene в TEST DEVICE) + Б7 (machine-read-names-in-latin в PROJECT SPECIFICS); вердикты — `archive/2026-08/PQ-01-ревизия-2026-08-24.md`, «Дополнение по разделу 13»; 2026-08-25.
