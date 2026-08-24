@@ -18,6 +18,7 @@ GIT WORKFLOW:
 - Branch from `master`; commit message in present-tense English with type prefix (feat/fix/chore/docs).
 - New branch name: `feat/<thing>` or `fix/<thing>`. NEVER commit directly to master.
 - If `isolation:"worktree"` — the worktree is set up for you, but its base is NOT trusted: take it from the main working directory by the absolute path named in your task, then verify it twice — `git fetch "<absolute path to main working dir>" master && git checkout -b <branch> FETCH_HEAD && git rev-parse --short HEAD` (must equal the hash named in your task) and `ls <marker file from task>` (must exist). Hash differs or marker missing → STOP and report. Do NOT branch from `origin/master` inside a worktree. **From a worktree you NEVER deploy:** no `docker compose build/up` on the server, no `cp` into static/staging dirs, no `git push origin`, no cherry-pick «for sync», no `git reset --hard`; SSH to prod — read-only diagnostics only. Deploy = coordinator after merge. (`playbooks/worktree_deploy_safety.md` — written after a worktree agent rebuilt and deployed prod from a stale base.)
+- Note: the worktree isolation guard MAY reject compound shell commands involving git — on this exact refusal («command is too complex to verify that it stays inside the worktree»), split into single calls; this is the sandbox, not a git error (`playbooks/worktree_deploy_safety.md`).
 - If NOT isolated — beware of parallel agents. STOP if `git status` shows uncommitted from another task.
 
 PROD-AFFECTING DECISIONS:
@@ -84,3 +85,5 @@ IF BLOCKED:
 Если задача чисто read-only research (Explore) — briefing можно сократить, но если будет писать код или ходить по SSH — обязательно полный.
 
 История правок: `PE-01-разбор-2026-08-24.md`, раздел «Совместная редакция и применение», П1, П2, П4, П8; вердикты — `PQ-01-разбор-2026-08-24.md`; 2026-08-24.
+
+История правок: `PE-01-разбор-2026-08-24.md`, блок 3 (В10 — строка-вход о страже изоляции, в редакции PQ-01 (MAY reject); вердикт — `PQ-01-разбор-2026-08-24.md`, «Блок 3: разбор В1–В10»); 2026-08-24.
