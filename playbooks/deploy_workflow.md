@@ -114,6 +114,8 @@ ssh root@<remote_host> "docker exec <web_container> nginx -t && docker exec <web
 - Время операции (секунды).
 - Bandwidth для трафиковых операций (serve бинарей, log upload).
 
-HR-D переносит в `memory/project_resource_tracking.md`.
+Перенос чисел в журнал ресурсов — частью приёмки отчёта (`playbooks/resource_tracking.md`, «Правило HR-D»).
 
 История правок: `PE-01-разбор-2026-08-24.md`, раздел «Совместная редакция и применение», П1; вердикты — `PQ-01-разбор-2026-08-24.md`; 2026-08-24.
+
+История правок: `ревизия-свода-2026-08-24.md`, П7 (вход-потребитель сведён в ссылку на дом — `playbooks/resource_tracking.md`); вердикты — `PQ-01-ревизия-2026-08-24.md`; 2026-08-24.
