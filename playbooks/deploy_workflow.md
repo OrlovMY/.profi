@@ -7,7 +7,7 @@ Generic deploy pipeline для проекта на VPS с Docker. Подстав
 ```bash
 ssh root@<remote_host> "df -h /"
 ```
-- Должно быть **< 70% used**. Если выше — сначала то, что разрешено без эскалации: `docker builder prune -f --filter "until=72h"` — кэш сборки, образы не трогаются (`playbooks/prod_escalation.md`, «Что НЕ требует эскалации»; согласовано как routine — `playbooks/resource_tracking.md`, «Триггеры оптимизации». Флаг `-f` здесь — отказ от интерактивного подтверждения, а не force поверх данных; пункт 6 списка production-affecting про него не говорит). Проверить `df -h /` ещё раз. Если всё ещё выше 70 % — **STOP, эскалация в Big 7 через HR-D** (`prod_escalation.md`, пункт 1: прочистка образов и томов — production-affecting, потому что сносит образы для отката). Только после этого — миграции и build.
+- Должно быть **< 70% used**. Если выше — сначала то, что разрешено без эскалации: `docker builder prune -f --filter "until=72h"` — кэш сборки, образы не трогаются (`playbooks/prod_escalation.md`, «Что НЕ требует эскалации»; согласовано как routine — `playbooks/resource_tracking.md`, «Триггеры оптимизации». Флаг `-f` здесь — отказ от интерактивного подтверждения, а не force поверх данных; пункт 6 списка production-affecting про него не говорит). Проверить `df -h /` ещё раз. Если всё ещё выше 70 % — **STOP, эскалация в Большую команду через HR-D** (`prod_escalation.md`, пункт 1: прочистка образов и томов — production-affecting, потому что сносит образы для отката). Только после этого — миграции и build.
 
 ```bash
 ssh root@<remote_host> "docker compose ps --format '{{.Name}}\t{{.Status}}'"
@@ -89,10 +89,10 @@ ssh root@<remote_host> "docker exec <web_container> nginx -t && docker exec <web
 
 Если посреди deploy `No space left on device`:
 1. STOP, не паниковать, не зацикливаться.
-2. `docker builder prune -f --filter "until=72h"` (кэш сборки — без эскалации, см. §1). Не хватило — **STOP, эскалация в Big 7**: `docker system prune -a` / `image prune` / `--volumes` — пункт 1 списка production-affecting, решает Big 7, а не исполнитель (случай DO-01 — `prod_escalation.md`, «Почему правило существует»).
+2. `docker builder prune -f --filter "until=72h"` (кэш сборки — без эскалации, см. §1). Не хватило — **STOP, эскалация в Большую команду**: `docker system prune -a` / `image prune` / `--volumes` — пункт 1 списка production-affecting, решает Большая команда, а не исполнитель (случай DO-01 — `prod_escalation.md`, «Почему правило существует»).
 3. `df -h` проверить.
 4. **Retry миграции** (она в транзакции откатилась). Build идемпотентен — пересоберётся.
-5. Если повторился — эскалация Big 7 (нужен апгрейд диска или агрессивный prune).
+5. Если повторился — эскалация в Большую команду (нужен апгрейд диска или агрессивный prune).
 
 ## 8. Rollback
 
@@ -100,7 +100,7 @@ ssh root@<remote_host> "docker exec <web_container> nginx -t && docker exec <web
 |---|---|
 | Backend | `docker compose up -d <api_container>` со старым tag. Если `docker image prune -af` снёс старые tags → `git checkout <prev-good-commit> && docker compose build <api_container> && docker compose up -d <api_container>`. |
 | Frontend | `git revert <merge-commit> && docker compose build <web_container> && docker compose up -d <web_container>`. |
-| Migration | Только через reverse migration (`NNN_revert_*.sql`); **никогда** `DROP` руками без эскалации Big 7. |
+| Migration | Только через reverse migration (`NNN_revert_*.sql`); **никогда** `DROP` руками без эскалации в Большую команду. |
 
 ## 9. Post-deploy fix-tracking
 
@@ -119,3 +119,5 @@ ssh root@<remote_host> "docker exec <web_container> nginx -t && docker exec <web
 История правок: `PE-01-разбор-2026-08-24.md`, раздел «Совместная редакция и применение», П1; вердикты — `PQ-01-разбор-2026-08-24.md`; 2026-08-24.
 
 История правок: `ревизия-свода-2026-08-24.md`, П7 (вход-потребитель сведён в ссылку на дом — `playbooks/resource_tracking.md`); вердикты — `PQ-01-ревизия-2026-08-24.md`; 2026-08-24.
+
+История правок: `ревизия-свода-2026-08-24.md`, раздел 12 (Д1-ход: канон «Большая команда», решение владельца 25.08.2026); вердикты — `PQ-01-ревизия-2026-08-24.md`, дополнение по разделу 12; 2026-08-25.
