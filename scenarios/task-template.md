@@ -22,6 +22,17 @@
                      В изолированной копии (isolation:"worktree") вместо pull — база из главного каталога
                      по абсолютному пути + хеш + маркер: playbooks/worktree_deploy_safety.md, «Mandatory pre-flight».
 
+Зависимости:         ставить УСТАНОВКОЙ (npm ci / go mod download) в своей копии.
+                     🔴 Связь (junction/symlink) на общий node_modules НЕ ЗАВОДИТЬ.
+                     Копию потом удаляют, удаление идёт по содержимому, и связь делает
+                     «содержимым» чужой каталог: так дважды (05.09 и 19.09.2026) были
+                     стёрты настоящие node_modules основного чекаута — 413 пакетов в ноль,
+                     а отказ пришёл выкатом и выглядел дефектом продукта.
+                     Не создать причину дешевле любой защиты при уборке.
+                     Случаи: memory/feedback_worktree_junction_empties_the_original,
+                     memory/feedback_junction_makes_worktree_remove_destructive;
+                     уборка: knowledge/recipes/git-worktree-branch-hygiene.md.
+
 НЕ ТРОГАТЬ:
   - <интеграционный файл 1>
   - <интеграционный файл 2>
