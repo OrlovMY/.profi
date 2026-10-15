@@ -66,6 +66,7 @@ ROLE PREFIX:
 HANDOFF:
 - НЕ ТРОГАТЬ: <integration files owned by other roles — router, main, Layout, compose, etc.>
 - ПЕРЕДАТЬ <owner>: <new routes/events/exports to merge into integration files>.
+- SERVICE MAP (only in projects with `docs/service-map/`): «Карта сервиса: затронуто — <что> → `docs/service-map/*.yaml` changed in THIS branch» OR «не затронуто — <почему>». See `knowledge/standards/service-map-living-plan.md`.
 
 IF BLOCKED:
 - If Bash forbidden, deploy impossible, or scope unclear — write strictly «ЗАДАЧА НЕ ЗАВЕРШЕНА» + list of patches for manual application. DO NOT report «готово» falsely.
