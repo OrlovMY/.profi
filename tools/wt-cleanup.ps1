@@ -165,6 +165,22 @@ function OrphanUnique([string]$dir) {
     }
 }
 
+# PQ-01 (MDMy/amnezia 21.10.2026): `git branch -d` сверяет слитость с UPSTREAM ветки, если он есть,
+# иначе с HEAD основного чекаута — не с -Main. Ветка, влитая в -Main, но не в свой upstream, -d не
+# удаляется, и -Gate навсегда давал 3. Возвращает $null, если -d удалит, иначе причину.
+function WhyNotDeletableByD([string]$b) {
+    $u = Invoke-Git @('-C', $Repo, 'rev-parse', '--verify', '--quiet', '--abbrev-ref', '--symbolic-full-name', "$b@{upstream}")
+    $up = ($u.Out -join '').Trim()
+    if ($u.Code -eq 0 -and $up -and (Invoke-Git @('-C', $Repo, 'rev-parse', '--verify', '--quiet', "$up^{commit}")).Code -eq 0) {
+        $a = Invoke-Git @('-C', $Repo, 'merge-base', '--is-ancestor', $b, $up)
+        if ($a.Code -eq 0) { return $null }
+        return "влита в $Main, но не в свой upstream $up — удаление через -D решает владелец"
+    }
+    $a = Invoke-Git @('-C', $Repo, 'merge-base', '--is-ancestor', $b, 'HEAD')
+    if ($a.Code -eq 0) { return $null }
+    return "влита в $Main, но не в HEAD основного чекаута (upstream нет) — git branch -d откажет; переключи основной чекаут на $Main"
+}
+
 # --- репозиторий --------------------------------------------------------------
 if (-not (Test-Path -LiteralPath $Repo -PathType Container)) { Abort "нет каталога $Repo" }
 $Repo = (Resolve-Path -LiteralPath $Repo).Path
@@ -255,7 +271,8 @@ if ($Apply) {
         if ($r.Code) { $script:skipped++; Say "git отказался удалять $($w.Path): $($r.Out -join ' ')" Yellow; continue }
         $n++; Say "удалена: $($w.Path)" Green
         CheckIntegrity
-        if ($DeleteMergedBranches) {
+        if ($DeleteMergedBranches -and ($nd = WhyNotDeletableByD $w.Branch)) { $script:skipped++; Say "  ветку $($w.Branch) ОСТАВИЛ: $nd" Yellow }
+        elseif ($DeleteMergedBranches) {
             $b = Invoke-Git @('-C', $Repo, 'branch', '-d', $w.Branch)   # -d (не -D): git сам откажет неслитой
             if ($b.Code) { Say "  ветку $($w.Branch) не удалил: $($b.Out -join ' ')" Yellow } else { Say "  ветка $($w.Branch) удалена" }
         }
@@ -322,7 +339,10 @@ if ($MergedBranches) {
     $protected = '^(main|master|develop|dev|release/.*|prod.*|stable.*)$'
     $cand = @(foreach ($b in $all) {
         if ($b -eq $Main -or $b -match $protected -or $busy.ContainsKey($b)) { continue }
-        if ((Invoke-Git @('-C', $Repo, 'merge-base', '--is-ancestor', $b, $Main)).Code -eq 0) { $b }
+        if ((Invoke-Git @('-C', $Repo, 'merge-base', '--is-ancestor', $b, $Main)).Code -ne 0) { continue }
+        $nd = WhyNotDeletableByD $b
+        if ($nd) { $script:skipped++; Say "  ОСТАВЛЕНА ветка $b : $nd" Yellow; continue }   # в -Gate не считается
+        $b
     })
     $script:pending += $cand.Count
     Say "Слитых в $Main веток без копий: $($cand.Count)" Cyan
