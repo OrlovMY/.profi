@@ -1,0 +1,2 @@
+# Шаблон хука — sh-скрипт: CRLF ломает его в Git Bash, поэтому всегда LF.
+tools/pre-push-cleanup-gate text eol=lf
