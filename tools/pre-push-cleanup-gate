@@ -1,0 +1,24 @@
+#!/bin/sh
+# pre-push-cleanup-gate — локальная проверка-отказ уборки (шаблон: P:\OrlovMY\.profi\tools\pre-push-cleanup-gate).
+# Ставится КОПИЕЙ в .git/hooks/pre-push основного чекаута; в репозиторий НЕ коммитится, коллег не затрагивает.
+# Отказывает в push, только если wt-cleanup.ps1 нашёл непустое «к удалению» (код 3):
+# отработавшие копии, сироты, слитые ветки. «Оставлено» (свежие, грязные, со связями) push НЕ блокирует.
+# Обход — ТОЛЬКО по слову владельца, на один push:
+#   WT_CLEANUP_GATE=skip-owner-approved-transit-stays git push ...
+# Источник: archive/2026-10/PQ-01-разбор-уборка-артефактов-2026-10-21.md; стандарт attach-recurring-step-to-mandatory-action.md.
+
+if [ "$WT_CLEANUP_GATE" = "skip-owner-approved-transit-stays" ]; then
+  echo "cleanup-gate: ОБХОД по слову владельца — транзит не убран, впиши это в отчёт" >&2
+  exit 0
+fi
+
+common=$(git rev-parse --path-format=absolute --git-common-dir) || { echo "cleanup-gate: не нашёл git-common-dir — push остановлен" >&2; exit 1; }
+main=$(dirname "$common")
+
+pwsh -NoProfile -File 'P:\OrlovMY\.profi\tools\wt-cleanup.ps1' -Repo "$main" -Gate -MergedBranches -Orphans >/dev/null 2>&1
+rc=$?
+case $rc in
+  0|1) exit 0 ;;
+  3) echo "cleanup-gate: ОТКАЗ — есть что убрать. Посмотри: pwsh -NoProfile -File P:\\OrlovMY\\.profi\\tools\\wt-cleanup.ps1 -Repo \"$main\" -MergedBranches -Orphans ; убери с -Apply -DeleteMergedBranches и повтори push." >&2; exit 1 ;;
+  *) echo "cleanup-gate: wt-cleanup.ps1 завершился кодом $rc (аварийно или не запустился) — push остановлен, сообщи владельцу." >&2; exit 1 ;;
+esac
